@@ -45,16 +45,36 @@ function Main() {
 
   const { notes, deleteNotes } = useContext(NotesContext);
 
+  const [searchText, setSearchText] = useState("");
+
   const [editNote, setEditNote] = useState(null);
 
   const handleDelete = (id) => () => {
     deleteNotes(id);
   };
 
+  const handleChange = (e) => {
+    setSearchText(e.target.value);
+  };
+
+  const getSearchResult = () => {
+    if (!searchText.length) return notes;
+
+    let res = [];
+    for (let note of notes) {
+      if (note.title.includes(searchText)) {
+        res.push(note);
+      }
+    }
+
+    return res;
+  };
+
   return (
     <div className={classes.root}>
       <div className={classes.mainContent}>
-        {notes.map((note) => (
+        <input value={searchText} onChange={handleChange} />
+        {getSearchResult().map((note) => (
           <Card border={note.color} key={note.id}>
             <div className={classes.header}>
               <Typography variant="h6">{note.title.slice(0, 10)}...</Typography>
